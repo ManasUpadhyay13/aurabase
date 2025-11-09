@@ -24,38 +24,47 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 import { authClient } from "@/lib/auth-client";
 
-const loginSchema = z.object({
-  email: z.email({ message: "Invalid email address" }),
-  password: z
-    .string()
-    .min(8, { message: "Password must be at least 8 characters long" }),
-});
+const registerSchema = z
+  .object({
+    email: z.email({ message: "Invalid email address" }),
+    password: z
+      .string()
+      .min(8, { message: "Password must be at least 8 characters long" }),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword", "password"],
+  });
 
-type LoginSchema = z.infer<typeof loginSchema>;
+type RegisterFormValues = z.infer<typeof registerSchema>;
 
-export const LoginForm = () => {
+export const RegisterForm = () => {
   const router = useRouter();
 
-  const form = useForm<LoginSchema>({
-    resolver: zodResolver(loginSchema),
+  const form = useForm<RegisterFormValues>({
+    resolver: zodResolver(registerSchema),
     defaultValues: {
       email: "",
       password: "",
+      confirmPassword: "",
     },
   });
 
-  const onSubmit = async (data: LoginSchema) => {
-    await authClient.signIn.email(
+  const onSubmit = async (data: RegisterFormValues) => {
+    await authClient.signUp.email(
       {
+        name: data.email.split("@")[0],
         email: data.email,
         password: data.password,
         callbackURL: "/",
       },
       {
         onSuccess: () => {
-          toast.success("Login successful");
+          toast.success("Account created successfully");
           router.push("/");
         },
         onError: (ctx) => {
@@ -71,8 +80,8 @@ export const LoginForm = () => {
     <div className="flex flex-col gap-6">
       <Card>
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold">Welcome Back!</CardTitle>
-          <CardDescription>Login to your account to continue</CardDescription>
+          <CardTitle className="text-2xl font-bold">Get Started!</CardTitle>
+          <CardDescription>Create your aaccount to get started</CardDescription>
           <CardContent>
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -130,21 +139,38 @@ export const LoginForm = () => {
                         </FormItem>
                       )}
                     />
+                    <FormField
+                      control={form.control}
+                      name="confirmPassword"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Confirm Password</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="password"
+                              placeholder="********"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
                     <Button
                       type="submit"
                       className="w-full"
                       disabled={isPending}
                     >
-                      Login
+                      Register
                     </Button>
                   </div>
                   <div className="text-center text-sm">
-                    Don't have an account?{" "}
+                    Already have an account?{" "}
                     <Link
-                      href="/signup"
+                      href="/login"
                       className="underline-offset-4 underline"
                     >
-                      Sign up
+                      Login
                     </Link>
                   </div>
                 </div>
