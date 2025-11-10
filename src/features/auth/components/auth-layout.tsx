@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { APP_LOGO_URL, APP_NAME } from "../../../../utils/constant";
 
 const AuthLayout = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -10,13 +11,13 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
           className="flex items-center gap-2 self-center font-medium"
         >
           <Image
-            src="/logo.svg"
-            alt="aurabase"
+            src={APP_LOGO_URL}
+            alt={APP_NAME}
             className="flex items-center gap-2 self-center font-medium"
             width={20}
             height={20}
           />
-          Aurabase
+          {APP_NAME}
         </Link>
         {children}
       </div>
