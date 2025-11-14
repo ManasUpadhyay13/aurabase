@@ -1,6 +1,8 @@
-import React from "react";
+import { requrieAuth } from "@/lib/auth-utils";
 
-const Page = () => {
+
+const Page = async() => {
+  await requrieAuth()
   return (
     <div>
       <h1>Workflows</h1>

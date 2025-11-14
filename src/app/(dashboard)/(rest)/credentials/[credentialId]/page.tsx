@@ -1,3 +1,5 @@
+import { requrieAuth } from "@/lib/auth-utils";
+
 interface PageProps {
   params: Promise<{
     credentialId: string;
@@ -5,6 +7,7 @@ interface PageProps {
 }
 
 const Page = async ({ params }: PageProps) => {
+  await requrieAuth();
   const { credentialId } = await params;
 
   return <div>Credential id: {credentialId}</div>;
