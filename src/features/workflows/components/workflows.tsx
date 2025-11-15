@@ -1,38 +1,28 @@
 "use client";
 
+import { formatDistanceToNow } from "date-fns";
 import {
   EmptyView,
   EntityContainer,
   EntityHeader,
+  EntityItem,
   EntityList,
   EntityPagination,
   EntitySearch,
   ErrorView,
   LoadingView,
 } from "@/components/entity-components";
-import { useCreateWorkflow, useSuspenceWorkflows } from "../hooks/use-workflow";
+import {
+  useCreateWorkflow,
+  useRemoveWorkflow,
+  useSuspenceWorkflows,
+} from "../hooks/use-workflow";
 import { useUpgradeModel } from "@/hooks/use-upgrade-model";
 import { useRouter } from "next/navigation";
 import { useWorkflowsParams } from "../hooks/use-workflows-params";
 import { useEntitySearch } from "@/hooks/use-entity-search";
 import React from "react";
-import Link from "next/link";
-import { cn } from "@/lib/utils";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardTitle,
-} from "@/components/ui/card";
-
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import { MoreVerticalIcon, TrashIcon } from "lucide-react";
+import { WorkflowIcon } from "lucide-react";
 
 export const WorkflowsSearch = () => {
   const [params, setParams] = useWorkflowsParams();
@@ -56,7 +46,7 @@ export const WorkflowsList = () => {
     <EntityList
       items={workflows.data.items}
       getKey={(workflow) => workflow.id}
-      renderItem={(workflow) => <p>{workflow.name}</p>}
+      renderItem={(workflow) => <WorklfowsItem data={workflow} />}
       emptyView={<WorkflowsEmpty />}
     />
   );
@@ -154,86 +144,31 @@ export const WorkflowsEmpty = () => {
   );
 };
 
-interface EntityItemProps {
-  href: string;
-  title: string;
-  subTitle: React.ReactNode;
-  image: React.ReactNode;
-  actions: React.ReactNode;
-  onRemove?: () => void | Promise<void>;
-  isRemoving?: boolean;
-  className?: string;
-}
+export const WorklfowsItem = ({ data }: { data: any }) => {
+  const removeWorkflow = useRemoveWorkflow();
 
-export const EntityItem = ({
-  href,
-  title,
-  subTitle,
-  image,
-  actions,
-  onRemove,
-  isRemoving,
-  className,
-}: EntityItemProps) => {
-  const handleRemove = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    if (isRemoving) return;
-
-    if (onRemove) {
-      onRemove();
-    }
+  const handleRemove = () => {
+    removeWorkflow.mutate({ id: data.id });
   };
 
   return (
-    <Link href={href} prefetch>
-      <Card
-        className={cn(
-          "p-4 shadow-none hover:shadow cursor-pointer",
-          isRemoving && "opacity-50 cursor-not-allowed",
-          className
-        )}
-      >
-        <CardContent className="flex flex-row items-center justify-between p-0">
-          <div className="flex items-center gap-3">
-            {image}
-            <div>
-              <CardTitle className="text-base font-medium">{title}</CardTitle>
-              {!!Boolean(subTitle) && (
-                <CardDescription>{subTitle}</CardDescription>
-              )}
-            </div>
-          </div>
-          {(actions || onRemove) && (
-            <div className="flex gap-x-4 items-center">
-              {actions}
-              {onRemove && (
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <MoreVerticalIcon className="size-4" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent
-                    align="end"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <DropdownMenuItem onClick={handleRemove}>
-                      <TrashIcon className="size-4" />
-                      Delete
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              )}
-            </div>
-          )}
-        </CardContent>
-      </Card>
-    </Link>
+    <EntityItem
+      href={`/workflows/${data.id}`}
+      title={data.name}
+      subTitle={
+        <>
+          Updated {formatDistanceToNow(data.updatedAt, { addSuffix: true })}
+          &bull; Created{" "}
+          {formatDistanceToNow(data.createdAt, { addSuffix: true })}
+        </>
+      }
+      image={
+        <div className="size-8 flex items-center justify-center">
+          <WorkflowIcon className="size-5 text-muted-foreground" />
+        </div>
+      }
+      onRemove={handleRemove}
+      isRemoving={removeWorkflow.isPending}
+    />
   );
 };

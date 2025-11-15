@@ -120,6 +120,7 @@
     @apply bg-background text-foreground;
   }
 } */
+
 :root {
   --background: rgb(249, 249, 249);
   --foreground: rgb(32, 32, 32);

@@ -266,7 +266,7 @@ interface EntityItemProps {
   title: string;
   subTitle: React.ReactNode;
   image: React.ReactNode;
-  actions: React.ReactNode;
+  actions?: React.ReactNode;
   onRemove?: () => void | Promise<void>;
   isRemoving?: boolean;
   className?: string;
