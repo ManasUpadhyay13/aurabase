@@ -60,7 +60,7 @@ export const WorkflowsHeader = ({ disabled }: { disabled?: boolean }) => {
   const handleCreate = () => {
     createWorkflow.mutate(undefined, {
       onSuccess: (data) => {
-        router.push(`/workflows/${data?.id}`);
+        router.push(`/workflow/${data?.id}`);
       },
       onError: (error) => {
         handleError(error);
@@ -128,7 +128,7 @@ export const WorkflowsEmpty = () => {
   const handleCreate = () => {
     createWorkflow.mutate(undefined, {
       onSuccess: (data) => {
-        router.push(`/workflows/${data?.id}`);
+        router.push(`/workflow/${data?.id}`);
       },
       onError: (error) => {
         handleError(error);
@@ -153,7 +153,7 @@ export const WorklfowsItem = ({ data }: { data: any }) => {
 
   return (
     <EntityItem
-      href={`/workflows/${data.id}`}
+      href={`/workflow/${data.id}`}
       title={data.name}
       subTitle={
         <>
