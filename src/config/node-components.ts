@@ -4,6 +4,8 @@ import { NodeTypes } from "@xyflow/react";
 
 export const nodeComponents = {
   [NodeType.INITIAL]: InitialNode,
+  // [NodeType.MANNUAL_TRIGGER]: ManualTriggerNode,
+  // [NodeType.HTTP_REQUEST]: HttpRequestNode,
 } as const satisfies NodeTypes;
 
 export type RegisteredNodeType = keyof typeof nodeComponents;
