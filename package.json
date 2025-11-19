@@ -64,6 +64,7 @@
     "inngest": "^3.45.0",
     "inngest-cli": "^1.13.4",
     "input-otp": "^1.4.2",
+    "jotai": "^2.15.1",
     "lucide-react": "^0.553.0",
     "mprocs": "^0.7.3",
     "next": "15.5.4",
