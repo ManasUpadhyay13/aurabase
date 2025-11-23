@@ -1,9 +1,10 @@
 "use client";
 
-import type { Node, NodeProps, useReactFlow } from "@xyflow/react";
+import { Node, NodeProps, useReactFlow } from "@xyflow/react";
 import { GlobeIcon } from "lucide-react";
 import { memo, useState } from "react";
 import { BaseExecutionNode } from "../base-execution-node";
+import { HttpRequestDialog } from "./dialog";
 
 type HttpRequestNodeData = {
   endpoint?: string;
@@ -20,16 +21,63 @@ export const HttpRequestNode = memo((props: NodeProps<HttpRequestNodeType>) => {
     ? `${nodeData.method || "GET"}: ${nodeData.endpoint}`
     : "Not Configured";
 
+  const nodeStatus = "initial";
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const { setNodes } = useReactFlow();
+
+  const handleSubmit = (values: {
+    endPoint: string;
+    method: string;
+    body?: string;
+  }) => {
+    setNodes((nodes) =>
+      nodes.map((node) => {
+        if (node.id === props.id) {
+          return {
+            ...node,
+            data: {
+              ...node.data,
+              endpoint: values.endPoint,
+              method: values.method,
+              body: values.body,
+            },
+          };
+        }
+        return node;
+      })
+    );
+  };
+  const handleOpenSettings = () => {
+    setDialogOpen(true);
+  };
+
   return (
-    <BaseExecutionNode
-      {...props}
-      id={props.id}
-      icon={GlobeIcon}
-      name="HTTP Request"
-      description={description}
-      onSettings={() => {}}
-      onDoubleClick={() => {}}
-    />
+    <>
+      <HttpRequestDialog
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+        onSubmit={handleSubmit}
+        defaultEndpoint={nodeData?.endpoint}
+        defaultMethod={nodeData?.method}
+        defaultBody={nodeData?.body}
+      />
+      <BaseExecutionNode
+        {...props}
+        id={props.id}
+        icon={GlobeIcon}
+        name="HTTP Request"
+        description={description}
+        status={nodeStatus}
+        onSettings={() => {
+          handleOpenSettings();
+          return {};
+        }}
+        onDoubleClick={() => {
+          handleOpenSettings();
+          return {};
+        }}
+      />
+    </>
   );
 });
 
