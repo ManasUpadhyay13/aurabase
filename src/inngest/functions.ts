@@ -3,6 +3,7 @@ import { inngest } from "./client";
 import { topologicalSort } from "./utils";
 import { NodeType } from "@prisma/client";
 import { getExecuter } from "@/features/executions/lib/executor-registry";
+import prisma from "@/lib/db";
 
 export const executeWorkflow = inngest.createFunction(
   { id: "execute-workflow" },
@@ -37,11 +38,13 @@ export const executeWorkflow = inngest.createFunction(
     for (const node of sortedNodes) {
       const executer = getExecuter(node.type);
       context = await executer({
-        data : node.data as Record<string, unknown>,
-        nodeId : node.id
-      })
+        data: node.data as Record<string, unknown>,
+        nodeId: node.id,
+        context,
+        step,
+      });
     }
 
-    return { sortedNodes };
+    return { workflowId, result: context };
   }
 );
