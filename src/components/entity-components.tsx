@@ -123,8 +123,8 @@ export const EntitySearch = ({
   placeholder,
 }: EntitySearchProps) => {
   return (
-    <div className="relative ml-auto w-full max-w-sm">
-      <SearchIcon className="size-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+    <div className="relative ml-auto w-full flex items-end justify-end">
+      <SearchIcon className="size-3.5 absolute right-44 top-1/2 -translate-y-1/2 text-muted-foreground" />
       <Input
         className="max-w-[200px] bg-background shadow-none border-border pl-8"
         value={value}
@@ -208,7 +208,7 @@ interface EmptyViewProps extends StateViewProps {
 
 export const EmptyView = ({ message, onNew }: EmptyViewProps) => {
   return (
-    <Empty className="border border-dashed bg-white">
+    <Empty className="border border-dashed bg-white w-[500px]">
       <EmptyHeader>
         <EmptyMedia variant="icon">
           <PackageOpenIcon className="size-6 text-muted-foreground" />
@@ -246,7 +246,9 @@ export const EntityList = <T,>({
   if (items.length === 0 && emptyView) {
     return (
       <div className="flex-1 flex justify-center items-center">
-        <div className="max-w-sm mx-auto">{emptyView}</div>
+        <div className="max-w-sm mx-auto flex items-center justify-center">
+          {emptyView}
+        </div>
       </div>
     );
   }
