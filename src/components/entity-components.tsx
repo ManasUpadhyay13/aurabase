@@ -123,7 +123,7 @@ export const EntitySearch = ({
   placeholder,
 }: EntitySearchProps) => {
   return (
-    <div className="relative ml-auto w-full flex items-end justify-end">
+    <div className="relative ml-auto w-full flex items-end justify-end mb-6">
       <SearchIcon className="size-3.5 absolute right-44 top-1/2 -translate-y-1/2 text-muted-foreground" />
       <Input
         className="max-w-[200px] bg-background shadow-none border-border pl-8"
