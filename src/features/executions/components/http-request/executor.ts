@@ -3,8 +3,8 @@ import { NonRetriableError } from "inngest";
 import ky, { type Options as KyOptions } from "ky";
 
 type HttpRequestData = {
-  variableName?: string;
-  endpoint?: string;
+  variableName: string;
+  endpoint: string;
   method?: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
   body?: string;
 };
@@ -20,6 +20,11 @@ export const httpRequestExecutor: NodeExecutor<HttpRequestData> = async ({
   if (!data.variableName) {
     // TODO publish the error state for http
     throw new NonRetriableError("No variable name provided for HTTP Request");
+  }
+
+  if (!data.method) {
+    // TODO publish the error state for http
+    throw new NonRetriableError("No method provided for HTTP Request");
   }
 
   if (!data.endpoint) {
@@ -53,17 +58,9 @@ export const httpRequestExecutor: NodeExecutor<HttpRequestData> = async ({
       },
     };
 
-    if (data.variableName) {
-      return {
-        ...context,
-        [data.variableName]: responsePayload,
-      };
-    }
-
-    // fallback to http response data
     return {
       ...context,
-      ...responsePayload,
+      [data.variableName]: responsePayload,
     };
   });
 
