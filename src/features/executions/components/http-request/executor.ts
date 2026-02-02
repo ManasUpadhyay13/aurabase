@@ -1,4 +1,5 @@
 import type { NodeExecutor } from "@/features/executions/types";
+import { httpRequestChannel } from "@/inngest/channels/http-request";
 import Handlebars from "handlebars";
 import { NonRetriableError } from "inngest";
 import ky, { type Options as KyOptions } from "ky";
@@ -12,7 +13,7 @@ Handlebars.registerHelper("json", (context: any) => {
 
 type HttpRequestData = {
   variableName: string;
-  endpoint: string;
+  endPoint: string;
   method?: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
   body?: string;
 };
@@ -22,25 +23,48 @@ export const httpRequestExecutor: NodeExecutor<HttpRequestData> = async ({
   nodeId,
   context,
   step,
+  publish,
 }) => {
-  // TODO publish the loding state
+  await publish(
+    httpRequestChannel().status({
+      nodeId,
+      status: "loading",
+    })
+  );
 
   if (!data.variableName) {
-    // TODO publish the error state for http
+    await publish(
+      httpRequestChannel().status({
+        nodeId,
+        status: "error",
+      })
+    );
+
     throw new NonRetriableError("No variable name provided for HTTP Request");
   }
 
   if (!data.method) {
-    // TODO publish the error state for http
+    await publish(
+      httpRequestChannel().status({
+        nodeId,
+        status: "error",
+      })
+    );
     throw new NonRetriableError("No method provided for HTTP Request");
   }
 
-  if (!data.endpoint) {
-    // TODO publish the error state for http
+  const endpointValue = data.endpoint ?? data.endPoint;
+  if (!endpointValue) {
+    await publish(
+      httpRequestChannel().status({
+        nodeId,
+        status: "error",
+      })
+    );
     throw new NonRetriableError("No endpoint provided for HTTP Request");
   }
   const result = await step.run("http-request", async () => {
-    const endpoint = Handlebars.compile(data.endpoint!)(context);
+    const endpoint = Handlebars.compile(endpointValue)(context);
     const method = data.method || "GET";
 
     const options: KyOptions = { method };
@@ -74,7 +98,12 @@ export const httpRequestExecutor: NodeExecutor<HttpRequestData> = async ({
     };
   });
 
-  // todo publish the success
+  await publish(
+    httpRequestChannel().status({
+      nodeId,
+      status: "success",
+    })
+  );
 
   return result;
 };
