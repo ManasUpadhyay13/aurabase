@@ -3,13 +3,15 @@ import { NodeExecutor } from "../types";
 import { mannualTriggerExecutor } from "@/features/triggers/components/mannual-trigger/executor";
 import { httpRequestExecutor } from "../components/http-request/executor";
 
-export const executorRegistry: Record<NodeType, NodeExecutor> = {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const executorRegistry: Record<NodeType, NodeExecutor<any>> = {
   [NodeType.MANNUAL_TRIGGER]: mannualTriggerExecutor,
   [NodeType.INITIAL]: mannualTriggerExecutor,
   [NodeType.HTTP_REQUEST]: httpRequestExecutor,
 };
 
-export const getExecuter = (nodeType: NodeType): NodeExecutor => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const getExecuter = (nodeType: NodeType): NodeExecutor<any> => {
   const executer = executorRegistry[nodeType];
 
   if (!executer) {
