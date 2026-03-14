@@ -12,6 +12,7 @@ import {
   Layers,
   Play,
   Sparkles,
+  AlertTriangle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion, useScroll, useTransform } from "framer-motion";
@@ -19,7 +20,7 @@ import { useRef } from "react";
 
 const fadeIn = {
   hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
 };
 
 const stagger = {
@@ -42,7 +43,7 @@ function Navbar() {
           <span className="text-lg tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-foreground to-foreground/70">{APP_NAME}</span>
         </Link>
         <div className="flex items-center gap-4">
-          <Button variant="ghost" size="sm" className="hidden sm:inline-flex hover:bg-white/5" asChild>
+          <Button variant="ghost" size="sm" className="hidden sm:inline-flex hover:bg-foreground/5" asChild>
             <Link href="/login">Log in</Link>
           </Button>
           <Button size="sm" className="rounded-full shadow-[0_0_15px_rgba(168,85,247,0.3)] transition-shadow hover:shadow-[0_0_25px_rgba(168,85,247,0.5)]" asChild>
@@ -97,7 +98,7 @@ function HeroSection() {
               <ArrowRight className="ml-2 size-4" />
             </Link>
           </Button>
-          <Button variant="outline" size="lg" className="rounded-full h-12 px-8 text-base border-border/50 hover:bg-white/5 transition-all hover:-translate-y-1" asChild>
+          <Button variant="outline" size="lg" className="rounded-full h-12 px-8 text-base border-border/50 hover:bg-foreground/5 transition-all hover:-translate-y-1" asChild>
             <Link href="/login">Explore docs</Link>
           </Button>
         </motion.div>
@@ -112,7 +113,7 @@ function HeroSection() {
       >
         <div className="relative rounded-2xl border border-border/50 bg-card/40 p-2 shadow-2xl backdrop-blur-xl">
           <div className="absolute -inset-0.5 rounded-2xl bg-gradient-to-b from-primary/20 to-transparent opacity-20 blur-xl" />
-          <div className="relative flex aspect-video w-full overflow-hidden rounded-xl border border-border/50 bg-[#0a0a0a]">
+          <div className="relative flex aspect-video w-full overflow-hidden rounded-xl border border-border/50 bg-background/50 backdrop-blur-sm">
             {/* Mock Nodes */}
             <div className="absolute top-1/4 left-1/4 flex items-center gap-3 rounded-xl border border-border bg-card/80 p-3 shadow-lg backdrop-blur-sm">
               <div className="flex size-8 items-center justify-center rounded-lg bg-emerald-500/20 text-emerald-500"><Zap className="size-4" /></div>
@@ -168,7 +169,7 @@ const steps = [
 
 function HowItWorksSection() {
   return (
-    <section className="relative bg-black py-32 z-10 px-6">
+    <section className="relative py-32 z-10 px-6">
       <div className="mx-auto max-w-7xl">
         <motion.div 
           initial="hidden" 
@@ -282,7 +283,7 @@ function FeaturesSection() {
               transition={{ duration: 0.5, delay: i * 0.1 }}
               className={`group relative overflow-hidden rounded-3xl border border-border/50 bg-card/20 p-8 transition-all hover:bg-card/40 hover:shadow-xl hover:-translate-y-1 ${feature.colSpan}`}
             >
-              <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
+              <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-foreground/20 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
               <div className="relative z-10 flex h-full flex-col">
                 <div className="mb-6 inline-flex size-14 items-center justify-center rounded-2xl bg-secondary/50 text-secondary-foreground ring-1 ring-border shadow-inner backdrop-blur-md transition-transform group-hover:scale-110">
                   <feature.icon className="size-6" />
@@ -306,7 +307,7 @@ function CTASection() {
   return (
     <section className="px-4 sm:px-8 mb-20">
       <div className="relative overflow-hidden rounded-[3rem] border border-border/50 bg-card/30 mx-auto max-w-7xl">
-        <div className="absolute inset-0 bg-grid-white/[0.02] bg-[length:32px_32px]" />
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:32px_32px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_60%,transparent_100%)]" />
         <div className="absolute top-1/2 left-1/2 -z-10 h-[400px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/20 blur-[100px] opacity-40 mix-blend-screen" />
         
         <motion.div 
@@ -316,7 +317,7 @@ function CTASection() {
           variants={fadeIn}
           className="relative z-10 flex flex-col items-center text-center px-6 py-24 sm:py-32"
         >
-          <div className="mb-6 inline-flex items-center justify-center rounded-full bg-white/5 p-3 shadow-inner ring-1 ring-white/10 backdrop-blur-md">
+          <div className="mb-6 inline-flex items-center justify-center rounded-full bg-foreground/5 p-3 shadow-inner ring-1 ring-foreground/10 backdrop-blur-md">
             <Image src={APP_LOGO_URL} alt={APP_NAME} width={32} height={32} />
           </div>
           <h2 className="text-4xl font-extrabold sm:text-5xl md:text-6xl tracking-tight max-w-3xl">
@@ -363,6 +364,24 @@ function Footer() {
   );
 }
 
+function MobileWarning() {
+  return (
+    <div className="fixed bottom-0 left-0 right-0 z-[100] border-t border-border/50 bg-background/80 p-4 shadow-2xl backdrop-blur-xl lg:hidden">
+      <div className="mx-auto flex max-w-7xl items-start gap-4">
+        <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-orange-500/10 text-orange-500 ring-1 ring-orange-500/20">
+          <AlertTriangle className="size-5" />
+        </div>
+        <div>
+          <h4 className="font-semibold text-foreground">Larger screen recommended</h4>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Aurabase features a complex visual workflow builder that is not supported on mobile or tablet devices. Please log in on a desktop computer to build.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function LandingPage() {
   return (
     <div className="min-h-svh bg-background text-foreground selection:bg-primary/30 selection:text-primary-foreground">
@@ -374,6 +393,7 @@ export default function LandingPage() {
         <CTASection />
       </main>
       <Footer />
+      <MobileWarning />
     </div>
   );
 }
