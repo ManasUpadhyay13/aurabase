@@ -53,7 +53,7 @@ export const httpRequestExecutor: NodeExecutor<HttpRequestData> = async ({
     throw new NonRetriableError("No method provided for HTTP Request");
   }
 
-  const endpointValue = data.endpoint ?? data.endPoint;
+  const endpointValue = data.endPoint;
   if (!endpointValue) {
     await publish(
       httpRequestChannel().status({
